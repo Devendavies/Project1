@@ -1,5 +1,5 @@
 (function Game () {
-
+console.log('js is working');
 // Variable declarations
 var turn = 0, // Tracks who's turn it is
     win = false, // True if win condition met
@@ -39,14 +39,80 @@ var players = [cop1, robber1, cop2, robber2];
 // FUNCTION DEFINITIONS
 
 // Game Setup
-var scoreRollUpdate = function(players){
-    $('.player').each($('.score')) = players[i].score;
-    $('.players').each($('lastRoll')) = players[i].lastRoll;
+var setUp = function(){
+    for (var i = 0; i < players.length; i++) {
+      scoreRollUpdate(players[i]);
+    }
 };
+
+// Update the display of a players score and last roll
+var scoreRollUpdate = function(player){
+  $('#' + player.id + '> .score').html('Meters from the river: ' + player.score);
+  if (player.initialRoll = true){
+  $('#' + player.id + '> .lastRoll').html('Last Dash: ' + players.lastRoll);
+  }
+};
+
+// Roll effects
+var rollEffects(player, roll){
+  switch (roll) {
+    case 1:
+    case 2:
+    case 3:
+      player.score -= 1;
+      break;
+      turn += 1;
+    case 4:
+      player.score -= 2;
+      turn += 3;
+      break;
+    case 5:
+      player.score -= 2;
+      turn += 2;
+      break;
+    case 6:
+      if(player.initialRoll = true){ // Check if first roll this turn                   // Gives same player another roll
+        player.score -= 1;
+      } else {
+        player.score -= 2;
+        player.initialRoll = true;
+        turn += 1;
+      }
+      break;
+    default: console.log('Roll error');
+  }
+}
+
+// Unique First Round
+var firstRound = function(){
+  turn = Math.ceil(Math.random()*4); // Can be improved to actually see 4 rolls later
+  roll = Math.ceil(Math.random()*6); // Bonus roll
+  rollEffects(players[turn%5], roll);
+
+  // moveFeed(player[turn%5].id + 'has won the roll with a ')
+}
+
+
 
 // ALL THE JAVASCRIPT IS BELONG TO US!
 
+var startGame = function (){
+  setUp();
+  firstRound();
 
 
+};
+
+startGame();
 
 }());
+
+
+// Re-Vamped functions
+
+// var scoreRollUpdate = function(players){
+//   for (var i = 0; i < players.length; i++) {
+//     $('.player > .score').eq(i).html('Meters from the river: ' + players[i].score);
+//     $('.players > .lastRoll').eq(i).html('Last Dash: ' + players[i].lastRoll);
+//   }
+// };
