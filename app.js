@@ -1,4 +1,4 @@
-(function Game () {
+// (function Game () {
 console.log('js is working');
 // Variable declarations
 var turn = 0, // Tracks who's turn it is
@@ -54,7 +54,8 @@ var scoreRollUpdate = function(player){
 };
 
 // Roll effects
-var rollEffects(player, roll){
+var rollEffects = function(player, roll){
+  player.lastRoll = roll;
   switch (roll) {
     case 1:
     case 2:
@@ -81,33 +82,58 @@ var rollEffects(player, roll){
       break;
     default: console.log('Roll error');
   }
-}
+};
 
 // Random Dice Roll
-var getRoll (){
+var getRoll = function(){
   return Math.ceil(Math.random()*6);
-}
+};
 
 // Unique First Round
-var firstRound = function(){
+var firstRound = function(players){
   turn = Math.ceil(Math.random()*4); // Can be improved to actually see 4 rolls later
   roll = getRoll();                  // Bonus roll
   if (roll === 1 || roll === 2 || roll ===3){
-    player.score -= 1;
+    players[turn].score -= 1;
   } else {
-    player.score -= 2;
+    players[turn].score -= 2;
   }
+  // moveFeed(player[turn%5].id + 'has won the roll with a ' + roll)
+};
 
-  // moveFeed(player[turn%5].id + 'has won the roll with a ')
+// Normal Rounds
+var normalRound = function(turn, players){
+  ON CLICK roll = getRoll();   // Shove to appropriate HTML element
+  missCheck(players);
+  rollEffects(player[turn], roll);
+  scoreRollUpdate(players[turn]);
+  checkForWin(players);
+};
+
+// Show and Hide buttons
+var buttonView = function(){
+  //
+};
+
+//
+winCheck(players){
+  if 
 }
 
-
+// Check for a roll that causes a missed turn
+var missCheck = function(players){
+  if (player[turn].lastRoll){
+    turn++;
+    return true;
+  } else { return false; }
+};
 
 // ALL THE JAVASCRIPT IS BELONG TO US!
 
 var startGame = function (){
   setUp();
-  firstRound();
+  firstRound(players);
+  normalRound(turn, players);
 
 
 
@@ -115,7 +141,7 @@ var startGame = function (){
 
 startGame();
 
-}());
+//}());
 
 
 // Re-Vamped functions
