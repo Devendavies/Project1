@@ -83,11 +83,20 @@ var rollEffects(player, roll){
   }
 }
 
+// Random Dice Roll
+var getRoll (){
+  return Math.ceil(Math.random()*6);
+}
+
 // Unique First Round
 var firstRound = function(){
   turn = Math.ceil(Math.random()*4); // Can be improved to actually see 4 rolls later
-  roll = Math.ceil(Math.random()*6); // Bonus roll
-  rollEffects(players[turn%5], roll);
+  roll = getRoll();                  // Bonus roll
+  if (roll === 1 || roll === 2 || roll ===3){
+    player.score -= 1;
+  } else {
+    player.score -= 2;
+  }
 
   // moveFeed(player[turn%5].id + 'has won the roll with a ')
 }
@@ -99,6 +108,7 @@ var firstRound = function(){
 var startGame = function (){
   setUp();
   firstRound();
+
 
 
 };
