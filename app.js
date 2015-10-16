@@ -41,9 +41,10 @@ var players = [cop1, robber1, cop2, robber2];
 // FUNCTION DEFINITIONS
 
 // Game Setup
-var setUp = function(players){
+var setUp = function(players, turn){
     for (var i = 0; i < players.length; i++) {
       scoreRollUpdate(players[i]);
+      showButton(turn);
     }
 };
 
@@ -63,19 +64,24 @@ var rollEffects = function(player, roll){
     case 2:
     case 3:
       player.score -= 1;
-      break;
       turn += 1;
+      break;
     case 4:
       player.score -= 2;
-      turn += 3;
+      if(player.initialRoll = true){
+        turn += 3;
+      }
       break;
     case 5:
       player.score -= 2;
-      turn += 2;
+      if(player.initialRoll = true){
+        turn += 2;
+      }
       break;
     case 6:
       if(player.initialRoll = true){ // Check if first roll this turn                   // Gives same player another roll
         player.score -= 1;
+        player.initialRoll = false;
       } else {
         player.score -= 2;
         player.initialRoll = true;
@@ -97,35 +103,28 @@ var firstRound = function(players, turn){
   roll = getRoll();                  // Bonus roll
   players[turn].score -= roll;
   // moveFeed(player[turn%5].id + 'has won the roll with a ' + roll)
+  console.log(players[turn].id + ' has rolled a ' + roll);
 };
 
-// Normal Rounds
-var normalRound = function(turn, lastTurn, players, winners){
-  roll = getRoll();   // Shove to appropriate HTML element
-  missCheck(players);
-  rollEffects(players[turn], roll);
-  scoreRollUpdate(players[turn]);
-  winCheck(players, winners);
-  buttonView(turn, lastTurn);
+// Hide a button
+var hideButton = function(lastTurn){
+  $('#button' + (lastTurn%4 + 1)).css('display', 'none');
 };
 
-// Show and Hide buttons
-var buttonView = function(turn, lastTurn){
-  $('#button' + (turn%4 + 1)).click(function(){
-    $('#button' + (turn + 1)%4).css('display', 'none');
-    $('#button' + (lastTurn)).css('display', '');
-  });
-};
+// Show a button
+var showButton = function(turn){
+  $('#button' + (turn%4 + 1)).css('display', '');
+}
 
 //
 var winCheck = function(players, winners){
-  if ((players[0].score === players[1]) ||
-      (players[0].score === players[3]) ||
-      (players[2].score === players[1]) ||
-      (players[2].score === players[3])) {
+  if ((players[0].score <= players[1]) ||
+      (players[0].score <= players[3]) ||
+      (players[2].score <= players[1]) ||
+      (players[2].score <= players[3])) {
     winners = 'cops';
     win = true;
-  } else if ((players[1].score === 0) && (players[3].score === 0)){
+  } else if ((players[1].score <= 0) && (players[3].score <= 0)){
     winners = 'robbers';
     win = true;
   } else { return null; }
@@ -142,24 +141,46 @@ var winMessage = function(winners){
 }
 
 // Check for a roll that causes a missed turn
-var missCheck = function(players){
-  if (players[turn].lastRoll){
+var missCheck = function(players, roll, lastTurn){
+  if (players[lastTurn].lastRoll == roll){
     turn++;
     return true;
   } else { return false; }
 };
 
-var startGame = function (){
-    setUp(players);
-    firstRound(players, turn);
-  while(win === false){
-    // NEED TO MAKE WAIT FOR CLICK EVENT
-    $('.button').click(function(){
-      normalRound(turn, lastTurn, players, winners);
-    });
-    win = true;
+// Normal player/dice effects
+var myTurn = function(turn, roll, players, lastTurn){
+  missCheck(players, turn, lastTurn);
+  rollEffects(players[turn], roll);
+  scoreRollUpdate(players[turn]);
+};
+
+// Normal Rounds
+var normalRound = function(roll, turn, lastTurn, players, winners){
+  roll = getRoll(); // Shove to appropriate HTML element
+  myTurn(turn, roll, players, lastTurn);
+  // Checks for bonus roll
+  if(roll === 6){
+    roll = getRoll();
+    myTurn(turn, roll, players);
   }
-  winMessage(winners);
+  // Post turn checks
+  players[turn].lastRoll = roll;
+  winCheck(players, winners);
+  hideButton(lastTurn);
+  showButton(turn);
+  if(win === true){
+    winMessage(winners);
+  }
+};
+
+// MAIN
+var startGame = function (){
+  setUp(players, turn);
+  firstRound(players, turn);
+  $('.button').click(function(){
+    normalRound(roll, turn, lastTurn, players, winners);
+  });
 };
 
 startGame();
