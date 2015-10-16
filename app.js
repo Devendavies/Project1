@@ -3,7 +3,8 @@ console.log('js is working');
 // Variable declarations
 var turn = 0, // Tracks who's turn it is
     win = false, // True if win condition met
-    lastTurn = 0; // Tracks last person to roll
+    lastTurn = 0, // Tracks last person to roll
+    winners = 'none'; // The winners
 
 // Player object definitions
 var cop1 = {
@@ -116,8 +117,21 @@ var buttonView = function(){
 };
 
 //
-winCheck(players){
-  if 
+winCheck(players, winner){
+  if ((players[0].score === players[1]) ||
+      (players[0].score === players[3]) ||
+      (players[2].score === players[1]) ||
+      (players[2].score === players[3])) {
+    winner = 'cops';
+    win = true;
+  } else if ((players[1].score === 0) && (players[3].score === 0)){
+    winner = 'robbers';
+    win = true;
+  } else { return null; }
+}
+
+var winMessage = function(){
+
 }
 
 // Check for a roll that causes a missed turn
@@ -131,12 +145,13 @@ var missCheck = function(players){
 // ALL THE JAVASCRIPT IS BELONG TO US!
 
 var startGame = function (){
-  setUp();
-  firstRound(players);
-  normalRound(turn, players);
-
-
-
+  while(win === false){
+    setUp();
+    firstRound(players);
+    normalRound(turn, players);
+    winCheck(winners);
+  }
+  winMessage(winners);
 };
 
 startGame();
