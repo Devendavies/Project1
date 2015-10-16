@@ -1,5 +1,6 @@
 // (function Game () {
 console.log('js is working');
+
 // Variable declarations
 var turn = 0, // Tracks who's turn it is
     win = false, // True if win condition met
@@ -29,10 +30,10 @@ var robber1 = {
 };
 
 var robber2 = {
-  id:'r2',
-  score:66,
-  lastRoll:null,
-  initialRoll:true
+  id: 'r2',
+  score: 66,
+  lastRoll: null,
+  initialRoll: true
 };
 
 var players = [cop1, robber1, cop2, robber2];
@@ -40,7 +41,7 @@ var players = [cop1, robber1, cop2, robber2];
 // FUNCTION DEFINITIONS
 
 // Game Setup
-var setUp = function(){
+var setUp = function(players){
     for (var i = 0; i < players.length; i++) {
       scoreRollUpdate(players[i]);
     }
@@ -91,33 +92,32 @@ var getRoll = function(){
 };
 
 // Unique First Round
-var firstRound = function(players){
-  turn = Math.ceil(Math.random()*4); // Can be improved to actually see 4 rolls later
+var firstRound = function(players, turn){
+  turn = Math.floor(Math.random()*4); // Can be improved to actually see 4 rolls later
   roll = getRoll();                  // Bonus roll
-  if (roll === 1 || roll === 2 || roll ===3){
-    players[turn].score -= 1;
-  } else {
-    players[turn].score -= 2;
-  }
+  players[turn].score -= roll;
   // moveFeed(player[turn%5].id + 'has won the roll with a ' + roll)
 };
 
 // Normal Rounds
 var normalRound = function(turn, players){
-  ON CLICK roll = getRoll();   // Shove to appropriate HTML element
+  $('#button' + (turn%4 + 1)).click(roll = getRoll());   // Shove to appropriate HTML element
   missCheck(players);
-  rollEffects(player[turn], roll);
+  rollEffects(players[turn], roll);
   scoreRollUpdate(players[turn]);
-  checkForWin(players);
+  winCheck(players);
 };
 
 // Show and Hide buttons
 var buttonView = function(){
-  //
+    $('#button' + (turn%4 + 1)).click(function(){
+        $('#button' + (turn + 1)%4).css('display: none;');
+        $('#button' + (turn + 2)%4).css('display: normal;');
+    });
 };
 
 //
-winCheck(players, winner){
+var winCheck = function(players, winner){
   if ((players[0].score === players[1]) ||
       (players[0].score === players[3]) ||
       (players[2].score === players[1]) ||
@@ -136,7 +136,7 @@ var winMessage = function(){
 
 // Check for a roll that causes a missed turn
 var missCheck = function(players){
-  if (player[turn].lastRoll){
+  if (players[turn].lastRoll){
     turn++;
     return true;
   } else { return false; }
@@ -145,25 +145,15 @@ var missCheck = function(players){
 // ALL THE JAVASCRIPT IS BELONG TO US!
 
 var startGame = function (){
+    setUp(players);
+    firstRound(players, turn);
   while(win === false){
-    setUp();
-    firstRound(players);
     normalRound(turn, players);
-    winCheck(winners);
+    winCheck(players, winners);
   }
   winMessage(winners);
 };
 
 startGame();
 
-//}());
-
-
-// Re-Vamped functions
-
-// var scoreRollUpdate = function(players){
-//   for (var i = 0; i < players.length; i++) {
-//     $('.player > .score').eq(i).html('Meters from the river: ' + players[i].score);
-//     $('.players > .lastRoll').eq(i).html('Last Dash: ' + players[i].lastRoll);
-//   }
-// };
+//}()); //MODULE ENDING
