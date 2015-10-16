@@ -1,0 +1,77 @@
+body {
+  background-image: url('url');
+}
+
+.gameboard {
+
+}
+
+h1 {
+  size: 20;
+  color: gray;
+  font:;
+  margin:;
+  padding:;
+}
+
+h2 {
+  size: 20;
+  color: red;
+  font:;
+  margin:;
+  padding-left: 30px;
+  border: solid brown 3px;
+}
+
+h3 {
+  size: 20;
+  color: blue;
+  font:;
+  margin:;
+  padding:;
+  border: solid red 3px;
+}
+
+h4 {
+  size: 20;
+  color: pink;
+  font:;
+  margin:;
+  padding:;
+}
+
+p {
+  size: 20;
+  color: gold;
+  font:;
+  margin:;
+  padding:;
+}
+
+article {
+  size: 20;
+  color: teal;
+  font:;
+  margin:;
+  padding:;
+}
+
+.player {}
+.score {}
+.lastRoll {}
+.roll {}
+.button {}
+
+#c1 {}
+#c2 {}
+#r1 {}
+#r2 {}
+
+#c1.playerImage {}
+#c2.playerImage {}
+#r1.playerImage {}
+#r2.playerImage {}
+
+#copsToRobber {}
+#moveFeed {}
+#rules {}
