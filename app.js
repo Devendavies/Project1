@@ -100,38 +100,45 @@ var firstRound = function(players, turn){
 };
 
 // Normal Rounds
-var normalRound = function(turn, players){
-  $('#button' + (turn%4 + 1)).click(roll = getRoll());   // Shove to appropriate HTML element
+var normalRound = function(turn, lastTurn, players, winners){
+  roll = getRoll();   // Shove to appropriate HTML element
   missCheck(players);
   rollEffects(players[turn], roll);
   scoreRollUpdate(players[turn]);
-  winCheck(players);
+  winCheck(players, winners);
+  buttonView(turn, lastTurn);
 };
 
 // Show and Hide buttons
-var buttonView = function(){
-    $('#button' + (turn%4 + 1)).click(function(){
-        $('#button' + (turn + 1)%4).css('display: none;');
-        $('#button' + (turn + 2)%4).css('display: normal;');
-    });
+var buttonView = function(turn, lastTurn){
+  $('#button' + (turn%4 + 1)).click(function(){
+    $('#button' + (turn + 1)%4).css('display', 'none');
+    $('#button' + (lastTurn)).css('display', '');
+  });
 };
 
 //
-var winCheck = function(players, winner){
+var winCheck = function(players, winners){
   if ((players[0].score === players[1]) ||
       (players[0].score === players[3]) ||
       (players[2].score === players[1]) ||
       (players[2].score === players[3])) {
-    winner = 'cops';
+    winners = 'cops';
     win = true;
   } else if ((players[1].score === 0) && (players[3].score === 0)){
-    winner = 'robbers';
+    winners = 'robbers';
     win = true;
   } else { return null; }
 }
 
-var winMessage = function(){
-
+var winMessage = function(winners){
+  if(winners == 'cops'){
+    console.log('cops have won goes here');
+  } else if(winners == 'robbers'){
+    console.log('robbers have won goes here');
+  } else {
+    console.log('winCheck error');
+  }
 }
 
 // Check for a roll that causes a missed turn
@@ -142,14 +149,15 @@ var missCheck = function(players){
   } else { return false; }
 };
 
-// ALL THE JAVASCRIPT IS BELONG TO US!
-
 var startGame = function (){
     setUp(players);
     firstRound(players, turn);
   while(win === false){
-    normalRound(turn, players);
-    winCheck(players, winners);
+    // NEED TO MAKE WAIT FOR CLICK EVENT
+    $('.button').click(function(){
+      normalRound(turn, lastTurn, players, winners);
+    });
+    win = true;
   }
   winMessage(winners);
 };
