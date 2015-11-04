@@ -1,5 +1,6 @@
 body {
-  background-image: url('url');
+  background-image: url('http://7-themes.com/data_images/out/12/6809626-simple-backgrounds.jpg');
+
 }
 
 .gameboard {
@@ -7,8 +8,9 @@ body {
 }
 
 h1 {
+  text-align: center;
   size: 20;
-  color: gray;
+  color: gold;
   font:;
   margin:0px;
 }
@@ -43,7 +45,8 @@ h4 {
 h5 {}
 
 h6 {
-  padding-top: 99%;
+  position: absolute;
+  margin-top: 80%;
   position: ;
   z-index: -1000;
 }
@@ -60,10 +63,10 @@ article {
   position: 80px;
   size: 20;
   color: teal;
-  font:;
+  font: ;
   margin-bottom: 15px;
-  padding:;
   z-index: -5000;
+  overflow-y: auto;
 }
 
 .player {
@@ -80,35 +83,35 @@ article {
   padding: 2px;
 }
 
-.roll {}
+.roll { position: }
 
 .button {
   position: relative;
   z-index: +5000;
   float: inherit;
-  image-orientation: center;
+  align-items: center;
 
 }
 
 #c1 {
-  padding: 5% 0 0 38%;
+  padding: 10% 0 0 38%;
   margin: 0px;
   margin: 0px;
   position: absolute;
 }
 
 #r1 {
-   padding: 30% 0 0 5%;
+   padding: 30% 0 0 70%;
    position: absolute;
  }
 
 #c2 {
-  padding: 60% 0 0 38%;
+  padding: 55% 0 0 38%;
   position: absolute;
 }
 
 #r2 {
-  padding: 30% 0 0 70%;
+  padding: 30% 0 0 5%;
   position: absolute;
 }
 
@@ -133,8 +136,10 @@ article {
 }
 
 #table img{
-  padding-left: 300px;
-  padding-top: 300px;
+  position: absolute;
+  width: 35%;
+  padding-left: 30%;
+  padding-top: 34%;
 }
 
 #copsToRobber {}

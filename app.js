@@ -41,24 +41,24 @@ var players = [cop1, robber1, cop2, robber2];
 // FUNCTION DEFINITIONS
 
 // Game Setup
-var setUp = function(players, turn){
-  for (var i = 0; i < 4; i++) {
+var setUp = function(){
+  for (var i = 0; i < players.length; i++) {
     updateScores(players[i]);
-    hideButton(i);
+    hideButton(i + 1);
   }
   // showButton(turn);
 };
 
 // Update the display of a players score and last roll
-var updateScores = function(player){
-  $('#' + player.id + '> .score').html('Meters from the river: ' + player.score);
-  if (player.initialRoll = true){
-  $('#' + player.id + '> .lastRoll').html('Last Dash: ' + players.lastRoll);
+var updateScores = function(){
+  $('#' + players[turn%4].id + '> .score').html('Meters from the river: ' + players[turn%4].score);
+  if (players[turn%4].initialRoll = true){
+  $('#' + players[turn%4].id + '> .lastRoll').html('Last Dash: ' + players[turn%4].lastRoll);
   }
 };
 
 // Roll effects
-var rollEffects = function(player, roll, turn){
+var rollEffects = function(player, roll){
   switch (roll) {
     case 1:
     case 2:
@@ -98,7 +98,6 @@ var rollEffects = function(player, roll, turn){
       break;
     default: console.log('Roll error');
   }
-  return turn;
 };
 
 // Random Dice Roll
@@ -106,38 +105,31 @@ var getRoll = function(){
   return Math.ceil(Math.random()*6);
 };
 
-// Unique First Round
-var firstRound = function(players, turn){
-  turn = Math.floor(Math.random()*4); // Can be improved to actually see 4 rolls later
-  roll = getRoll();                  // Bonus roll
-  players[turn%4].score -= roll;
-  // moveFeed(player[turn%5].id + 'has won the roll with a ' + roll)
-  console.log(players[turn%4].id + ' has rolled a ' + roll);
-};
-
 // Hide a button
-var hideButton = function(lastTurn){
-  $('#button' + (lastTurn%4 + 1)).css('display', 'none');
+var hideButton = function(button){
+  $('#button' + button).css('display', 'none');
 };
 
 // Show a button
-var showButton = function(turn){
-  $('#button' + (turn%4 + 1)).css('display', '');
+var showButton = function(nowTurn){
+  $('#button' + nowTurn).css('display', '');
 }
 
 //
-var winCheck = function(players){
+var winCheck = function(){
   if ((players[0].score <= players[1].score) ||
       (players[0].score <= players[3].score) ||
       (players[2].score <= players[1].score) ||
       (players[2].score <= players[3].score)) {
-    return 'cops';
+    winners = 'cops';
+    return 'Sweet Justice...';
   } else if ((players[1].score <= 0) && (players[3].score <= 0)){
-    return 'robbers';
+    winners = 'robbers';
+    return 'Evil as a cookie...';
   } else { return null; }
 }
 
-var winMessage = function(winners){
+var winMessage = function(){
   if(winners == 'cops'){
     console.log('cops have won goes here');
   } else if(winners == 'robbers'){
@@ -148,26 +140,38 @@ var winMessage = function(winners){
 }
 
 // Check for a roll that causes a missed turn
-var missCheck = function(players, roll, lastTurn){
+var missCheck = function(roll){
   if (players[lastTurn%4].lastRoll == roll){
     return true;
   } else { return false; }
 };
 
+// Unique first Round Pass
+var firstRound = function (){
+  turn = Math.ceil(Math.random()*4); // Can be improved to actually see 4 rolls later
+  roll = getRoll();                  // Bonus roll
+  players[turn%4].score -= roll;
+  updateScores();
+  hideButton(1);
+  showButton(turn%4 + 1);
+  // moveFeed(player[turn%5].id + 'has won the roll with a ' + roll)
+  console.log(players[turn%4].id + ' has rolled a ' + roll);
+};
+
 // Normal Rounds
-var normalRound = function(players, turn, winners, lastTurn){
+var normalRound = function(){
   roll = getRoll(); // Shove to appropriate HTML element
-  if (missCheck(players, roll, lastTurn) == false){
+  if (missCheck(roll) == false){
     console.log(players[turn%4].id + ' has rolled a ' + roll);
     players[turn%4].lastRoll = roll;
-    turn = rollEffects(players[turn%4], roll, turn);
+    rollEffects(players[turn%4], roll);
     lastTurn = turn;
     updateScores(players[turn%4]);
     // Checks for bonus roll
     if(roll === 6){
       roll = getRoll();
       players[turn%4].lastRoll = roll;
-      turn = rollEffects(players[turn%4], roll, turn);
+      rollEffects(players[turn%4], roll);
       lastTurn = turn;
       updateScores(players[turn%4]);
     }
@@ -177,41 +181,32 @@ var normalRound = function(players, turn, winners, lastTurn){
          }
 
   turn++;
-  console.log('Turn = ' + turn);
+  console.log('Turn at end of round = ' + turn);
 
   // Toggle button to next player
-  showButton(turn);
-  hideButton(lastTurn);
+  showButton(turn%4 + 1);
+  hideButton(lastTurn%4 + 1);
 
   // Post turn checks
-  winners = winCheck(players);
-
-  if(winners != null){
-    winMessage(winners);
+  if(winCheck() != null){
+    winMessage();
   }
-
-  return [turn, lastTurn, winners];
 };
 
-// First Round Pass
-var startGame = function (){
-  setUp(players, turn);
-  firstRound(players, turn);
-  showButton(turn);
-  updateScores(players[turn%4]);
-};
+// Set up players
+setUp();
+// Show a button that starts the game
+showButton(1);
 
-  showButton(0);
 
   // $('#button').click(function(){
-  startGame();
-  // });
+  if (turn == 0){ $('.button').click(function(){
+      firstRound();
+    });
+  }
 
-  $('.button').click(function(){
-    changes = normalRound(players, turn, winners, lastTurn);
-    turn = changes[0];
-    lastTurn = changes[1];
-    winners = changes[2];
-  });
-
+  if (turn != 1){ $('.button').click(function(){
+     normalRound();
+   });
+  }
 //}()); //MODULE ENDING
